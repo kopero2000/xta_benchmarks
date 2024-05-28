@@ -1,0 +1,439 @@
+ 
+chan go0,go1,go2; // Process i can start
+chan release0;
+chan release1; // Machine j can be freed
+int[0,2] running0 = 0; // Machine 1 is running process running1. 3 means none
+int[0,2] running1 = 0;
+
+int[0,2] round = 0;
+// Is process(i) waiting?
+// This is redundant information but don't know how to
+// simply access processes' locations
+bool w0 = 1;
+bool w1 = 1;
+bool w2 = 1;
+
+clock x0;
+// int[0,1] mode0;
+
+clock x1;
+// int[0,1] mode1;
+
+clock x2;
+// int[0,1] mode2;
+
+
+process Process0() {
+bool Ii_hbusreq0;
+bool Ii_hbusreq1;
+bool Ii_hbusreq2;
+bool Ii_hburst1;
+bool Ii_hburst0;
+bool Ii_hlock0;
+bool Ii_hlock1;
+bool Ii_hlock2;
+bool Ii_hready;
+bool Icontrollable_hmastlock;
+bool Icontrollable_nstart;
+bool Icontrollable_hmaster1;
+bool Icontrollable_locked;
+bool Icontrollable_hmaster0;
+bool Icontrollable_hgrant1;
+bool Icontrollable_busreq;
+bool Icontrollable_hgrant2;
+bool Icontrollable_ndecide;
+bool Icontrollable_nhgrant0;
+bool Ln41;
+bool Lreg_controllable_hgrant2_out;
+bool Lreg_controllable_hmaster1_out;
+bool Lsys_fair0done_out;
+bool Lreg_stateG3_0_out;
+bool Lenv_fair1done_out;
+bool Lreg_controllable_locked_out;
+bool Lsys_fair3done_out;
+bool Lreg_stateG3_1_out;
+bool Lreg_controllable_ndecide_out;
+bool Lreg_stateG3_2_out;
+bool Lreg_i_hbusreq0_out;
+bool Lreg_controllable_busreq_out;
+bool Lreg_controllable_nstart_out;
+bool Lreg_i_hbusreq1_out;
+bool Lsys_fair1done_out;
+bool Lreg_stateG2_out;
+bool Lreg_stateG10_1_out;
+bool Lenv_fair0done_out;
+bool Lreg_controllable_nhgrant0_out;
+bool Lreg_i_hlock2_out;
+bool Lreg_stateG10_2_out;
+bool Lreg_stateA1_out;
+bool Lreg_controllable_hmastlock_out;
+bool Lsys_fair4done_out;
+bool Lreg_i_hbusreq2_out;
+bool Lreg_i_hlock1_out;
+bool Lfair_cnt0_out;
+bool Lfair_cnt1_out;
+bool Lfair_cnt2_out;
+bool Lenv_safe_err_happened_out;
+bool Lreg_i_hlock0_out;
+bool Lreg_i_hready_out;
+bool Lreg_controllable_hgrant1_out;
+bool Lsys_fair2done_out;
+bool Lreg_controllable_hmaster0_out;
+
+state
+    on0 { x0 <= 1000 },
+    on1 { x0 <= 800 },
+    w,
+    dead,
+    up,
+    JustSetIi_hbusreq0,
+    JustSetIi_hbusreq1,
+    JustSetIi_hbusreq2,
+    JustSetIi_hburst1,
+    JustSetIi_hburst0,
+    JustSetIi_hlock0,
+    JustSetIi_hlock1,
+    JustSetIi_hlock2,
+    JustSetIi_hready,
+    JustSetIcontrollable_hmastlock,
+    JustSetIcontrollable_nstart,
+    JustSetIcontrollable_hmaster1,
+    JustSetIcontrollable_locked,
+    JustSetIcontrollable_hmaster0,
+    JustSetIcontrollable_hgrant1,
+    JustSetIcontrollable_busreq,
+    JustSetIcontrollable_hgrant2,
+    JustSetIcontrollable_ndecide,
+    JustSetIcontrollable_nhgrant0,
+    UpdatedLn41,
+    UpdatedLreg_controllable_hgrant2_out,
+    UpdatedLreg_controllable_hmaster1_out,
+    UpdatedLsys_fair0done_out,
+    UpdatedLreg_stateG3_0_out,
+    UpdatedLenv_fair1done_out,
+    UpdatedLreg_controllable_locked_out,
+    UpdatedLsys_fair3done_out,
+    UpdatedLreg_stateG3_1_out,
+    UpdatedLreg_controllable_ndecide_out,
+    UpdatedLreg_stateG3_2_out,
+    UpdatedLreg_i_hbusreq0_out,
+    UpdatedLreg_controllable_busreq_out,
+    UpdatedLreg_controllable_nstart_out,
+    UpdatedLreg_i_hbusreq1_out,
+    UpdatedLsys_fair1done_out,
+    UpdatedLreg_stateG2_out,
+    UpdatedLreg_stateG10_1_out,
+    UpdatedLenv_fair0done_out,
+    UpdatedLreg_controllable_nhgrant0_out,
+    UpdatedLreg_i_hlock2_out,
+    UpdatedLreg_stateG10_2_out,
+    UpdatedLreg_stateA1_out,
+    UpdatedLreg_controllable_hmastlock_out,
+    UpdatedLsys_fair4done_out,
+    UpdatedLreg_i_hbusreq2_out,
+    UpdatedLreg_i_hlock1_out,
+    UpdatedLfair_cnt0_out,
+    UpdatedLfair_cnt1_out,
+    UpdatedLfair_cnt2_out,
+    UpdatedLenv_safe_err_happened_out,
+    UpdatedLreg_i_hlock0_out,
+    UpdatedLreg_i_hready_out,
+    UpdatedLreg_controllable_hgrant1_out,
+    UpdatedLsys_fair2done_out,
+    UpdatedLreg_controllable_hmaster0_out;
+commit
+    up,
+    JustSetIi_hbusreq0,
+    JustSetIi_hbusreq1,
+    JustSetIi_hbusreq2,
+    JustSetIi_hburst1,
+    JustSetIi_hburst0,
+    JustSetIi_hlock0,
+    JustSetIi_hlock1,
+    JustSetIi_hlock2,
+    JustSetIi_hready,
+    JustSetIcontrollable_hmastlock,
+    JustSetIcontrollable_nstart,
+    JustSetIcontrollable_hmaster1,
+    JustSetIcontrollable_locked,
+    JustSetIcontrollable_hmaster0,
+    JustSetIcontrollable_hgrant1,
+    JustSetIcontrollable_busreq,
+    JustSetIcontrollable_hgrant2,
+    JustSetIcontrollable_ndecide,
+    JustSetIcontrollable_nhgrant0,
+    UpdatedLn41,
+    UpdatedLreg_controllable_hgrant2_out,
+    UpdatedLreg_controllable_hmaster1_out,
+    UpdatedLsys_fair0done_out,
+    UpdatedLreg_stateG3_0_out,
+    UpdatedLenv_fair1done_out,
+    UpdatedLreg_controllable_locked_out,
+    UpdatedLsys_fair3done_out,
+    UpdatedLreg_stateG3_1_out,
+    UpdatedLreg_controllable_ndecide_out,
+    UpdatedLreg_stateG3_2_out,
+    UpdatedLreg_i_hbusreq0_out,
+    UpdatedLreg_controllable_busreq_out,
+    UpdatedLreg_controllable_nstart_out,
+    UpdatedLreg_i_hbusreq1_out,
+    UpdatedLsys_fair1done_out,
+    UpdatedLreg_stateG2_out,
+    UpdatedLreg_stateG10_1_out,
+    UpdatedLenv_fair0done_out,
+    UpdatedLreg_controllable_nhgrant0_out,
+    UpdatedLreg_i_hlock2_out,
+    UpdatedLreg_stateG10_2_out,
+    UpdatedLreg_stateA1_out,
+    UpdatedLreg_controllable_hmastlock_out,
+    UpdatedLsys_fair4done_out,
+    UpdatedLreg_i_hbusreq2_out,
+    UpdatedLreg_i_hlock1_out,
+    UpdatedLfair_cnt0_out,
+    UpdatedLfair_cnt1_out,
+    UpdatedLfair_cnt2_out,
+    UpdatedLenv_safe_err_happened_out,
+    UpdatedLreg_i_hlock0_out,
+    UpdatedLreg_i_hready_out,
+    UpdatedLreg_controllable_hgrant1_out,
+    UpdatedLsys_fair2done_out,
+    UpdatedLreg_controllable_hmaster0_out;
+init
+    w;
+trans
+    w -> on0 { guard Lreg_stateG3_0_out == 0; sync go0?; assign x0:=0, w0:=0; },
+    w -> dead { guard Lreg_stateG3_0_out == 0 && x0 > 2000; },
+    on0 -> up { guard Lreg_stateG3_0_out == 0 && x0 >= 500 && x0 <= 1000; assign x0:=0; },
+    w -> on1 { guard Lreg_stateG3_0_out == 1; sync go0?; assign x0:=0, w0:=0; },
+    w -> dead { guard Lreg_stateG3_0_out == 1 && x0 > 2200; },
+    on1 -> up { guard Lreg_stateG3_0_out == 1 && x0 >= 400 && x0 <= 800; assign x0:=0; },
+    up -> JustSetIi_hbusreq0 { assign Ii_hbusreq0 := 0; },
+    up -> JustSetIi_hbusreq0 { assign Ii_hbusreq0 := 1; },
+    JustSetIi_hbusreq0 -> JustSetIi_hbusreq1 { assign Ii_hbusreq1 := 0; },
+    JustSetIi_hbusreq0 -> JustSetIi_hbusreq1 { assign Ii_hbusreq1 := 1; },
+    JustSetIi_hbusreq1 -> JustSetIi_hbusreq2 { assign Ii_hbusreq2 := 0; },
+    JustSetIi_hbusreq1 -> JustSetIi_hbusreq2 { assign Ii_hbusreq2 := 1; },
+    JustSetIi_hbusreq2 -> JustSetIi_hburst1 { assign Ii_hburst1 := 0; },
+    JustSetIi_hbusreq2 -> JustSetIi_hburst1 { assign Ii_hburst1 := 1; },
+    JustSetIi_hburst1 -> JustSetIi_hburst0 { assign Ii_hburst0 := 0; },
+    JustSetIi_hburst1 -> JustSetIi_hburst0 { assign Ii_hburst0 := 1; },
+    JustSetIi_hburst0 -> JustSetIi_hlock0 { assign Ii_hlock0 := 0; },
+    JustSetIi_hburst0 -> JustSetIi_hlock0 { assign Ii_hlock0 := 1; },
+    JustSetIi_hlock0 -> JustSetIi_hlock1 { assign Ii_hlock1 := 0; },
+    JustSetIi_hlock0 -> JustSetIi_hlock1 { assign Ii_hlock1 := 1; },
+    JustSetIi_hlock1 -> JustSetIi_hlock2 { assign Ii_hlock2 := 0; },
+    JustSetIi_hlock1 -> JustSetIi_hlock2 { assign Ii_hlock2 := 1; },
+    JustSetIi_hlock2 -> JustSetIi_hready { assign Ii_hready := 0; },
+    JustSetIi_hlock2 -> JustSetIi_hready { assign Ii_hready := 1; },
+    JustSetIi_hready -> JustSetIcontrollable_hmastlock { assign Icontrollable_hmastlock := 0; },
+    JustSetIi_hready -> JustSetIcontrollable_hmastlock { assign Icontrollable_hmastlock := 1; },
+    JustSetIcontrollable_hmastlock -> JustSetIcontrollable_nstart { assign Icontrollable_nstart := 0; },
+    JustSetIcontrollable_hmastlock -> JustSetIcontrollable_nstart { assign Icontrollable_nstart := 1; },
+    JustSetIcontrollable_nstart -> JustSetIcontrollable_hmaster1 { assign Icontrollable_hmaster1 := 0; },
+    JustSetIcontrollable_nstart -> JustSetIcontrollable_hmaster1 { assign Icontrollable_hmaster1 := 1; },
+    JustSetIcontrollable_hmaster1 -> JustSetIcontrollable_locked { assign Icontrollable_locked := 0; },
+    JustSetIcontrollable_hmaster1 -> JustSetIcontrollable_locked { assign Icontrollable_locked := 1; },
+    JustSetIcontrollable_locked -> JustSetIcontrollable_hmaster0 { assign Icontrollable_hmaster0 := 0; },
+    JustSetIcontrollable_locked -> JustSetIcontrollable_hmaster0 { assign Icontrollable_hmaster0 := 1; },
+    JustSetIcontrollable_hmaster0 -> JustSetIcontrollable_hgrant1 { assign Icontrollable_hgrant1 := 0; },
+    JustSetIcontrollable_hmaster0 -> JustSetIcontrollable_hgrant1 { assign Icontrollable_hgrant1 := 1; },
+    JustSetIcontrollable_hgrant1 -> JustSetIcontrollable_busreq { assign Icontrollable_busreq := 0; },
+    JustSetIcontrollable_hgrant1 -> JustSetIcontrollable_busreq { assign Icontrollable_busreq := 1; },
+    JustSetIcontrollable_busreq -> JustSetIcontrollable_hgrant2 { assign Icontrollable_hgrant2 := 0; },
+    JustSetIcontrollable_busreq -> JustSetIcontrollable_hgrant2 { assign Icontrollable_hgrant2 := 1; },
+    JustSetIcontrollable_hgrant2 -> JustSetIcontrollable_ndecide { assign Icontrollable_ndecide := 0; },
+    JustSetIcontrollable_hgrant2 -> JustSetIcontrollable_ndecide { assign Icontrollable_ndecide := 1; },
+    JustSetIcontrollable_ndecide -> JustSetIcontrollable_nhgrant0 { assign Icontrollable_nhgrant0 := 0; },
+    JustSetIcontrollable_ndecide -> JustSetIcontrollable_nhgrant0 { assign Icontrollable_nhgrant0 := 1; },
+    JustSetIcontrollable_nhgrant0 -> UpdatedLn41 { assign Ln41 := 1; },
+    UpdatedLn41 -> UpdatedLreg_controllable_hgrant2_out { assign Lreg_controllable_hgrant2_out := (Icontrollable_hgrant2); },
+    UpdatedLreg_controllable_hgrant2_out -> UpdatedLreg_controllable_hmaster1_out { assign Lreg_controllable_hmaster1_out := (Icontrollable_hmaster1); },
+    UpdatedLreg_controllable_hmaster1_out -> UpdatedLsys_fair0done_out { assign Lsys_fair0done_out := (!(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41)))); },
+    UpdatedLsys_fair0done_out -> UpdatedLreg_stateG3_0_out { assign Lreg_stateG3_0_out := !(!((!((!((Lreg_stateG3_2_out) && (Ln41)) && (Ii_hready)) && ((Lreg_stateG3_0_out) && (Ln41))) && !(!(!((Lreg_stateG3_2_out) && (Ln41)) && (Ii_hready)) && !((Lreg_stateG3_0_out) && (Ln41)))) && !(!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41)))) && !(((((!(Icontrollable_nstart) && (Icontrollable_hmastlock)) && !(Ii_hburst0)) && (!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && (Ii_hburst1)) && !(Ii_hready))); },
+    UpdatedLreg_stateG3_0_out -> UpdatedLenv_fair1done_out { assign Lenv_fair1done_out := ((((!(!((Lsys_fair4done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && !(!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && (!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && !((Lreg_stateG2_out) && (Ln41))))))) && !(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41)))))))) && !(!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready)))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready))); },
+    UpdatedLenv_fair1done_out -> UpdatedLreg_controllable_locked_out { assign Lreg_controllable_locked_out := (Icontrollable_locked); },
+    UpdatedLreg_controllable_locked_out -> UpdatedLsys_fair3done_out { assign Lsys_fair3done_out := (!(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))) && !(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1)))); },
+    UpdatedLsys_fair3done_out -> UpdatedLreg_stateG3_1_out { assign Lreg_stateG3_1_out := !((!((!((Lreg_stateG3_1_out) && (Ln41)) && ((Lreg_stateG3_0_out) && (Ln41))) && (!((Lreg_stateG3_2_out) && (Ln41)) && (Ii_hready))) && !(!(((((Lreg_stateG3_1_out) && (Ln41)) && ((Lreg_stateG3_0_out) && (Ln41))) && !((Lreg_stateG3_2_out) && (Ln41))) && (Ii_hready)) && ((Lreg_stateG3_1_out) && (Ln41)))) && !(((((!(Icontrollable_nstart) && (Icontrollable_hmastlock)) && !(Ii_hburst0)) && (!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && (Ii_hburst1)) && (Ii_hready))); },
+    UpdatedLreg_stateG3_1_out -> UpdatedLreg_controllable_ndecide_out { assign Lreg_controllable_ndecide_out := (Icontrollable_ndecide); },
+    UpdatedLreg_controllable_ndecide_out -> UpdatedLreg_stateG3_2_out { assign Lreg_stateG3_2_out := !(!(!((!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))) && (Ii_hready)) && ((Lreg_stateG3_2_out) && (Ln41))) && !(((((Lreg_stateG3_1_out) && (Ln41)) && ((Lreg_stateG3_0_out) && (Ln41))) && !((Lreg_stateG3_2_out) && (Ln41))) && (Ii_hready))); },
+    UpdatedLreg_stateG3_2_out -> UpdatedLreg_i_hbusreq0_out { assign Lreg_i_hbusreq0_out := (Ii_hbusreq0); },
+    UpdatedLreg_i_hbusreq0_out -> UpdatedLreg_controllable_busreq_out { assign Lreg_controllable_busreq_out := (Icontrollable_busreq); },
+    UpdatedLreg_controllable_busreq_out -> UpdatedLreg_controllable_nstart_out { assign Lreg_controllable_nstart_out := (Icontrollable_nstart); },
+    UpdatedLreg_controllable_nstart_out -> UpdatedLreg_i_hbusreq1_out { assign Lreg_i_hbusreq1_out := (Ii_hbusreq1); },
+    UpdatedLreg_i_hbusreq1_out -> UpdatedLsys_fair1done_out { assign Lsys_fair1done_out := (!(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))) && !(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41)))))); },
+    UpdatedLsys_fair1done_out -> UpdatedLreg_stateG2_out { assign Lreg_stateG2_out := !(!((!((Lreg_stateG2_out) && (Ln41)) && !(Ii_hburst1)) && ((!(Icontrollable_nstart) && (Icontrollable_hmastlock)) && !(Ii_hburst0))) && !(((Lreg_stateG2_out) && (Ln41)) && (Icontrollable_busreq))); },
+    UpdatedLreg_stateG2_out -> UpdatedLreg_stateG10_1_out { assign Lreg_stateG10_1_out := (!(!((Lreg_stateG10_1_out) && (Ln41)) && (Icontrollable_hgrant1)) && !(Ii_hbusreq1)); },
+    UpdatedLreg_stateG10_1_out -> UpdatedLenv_fair0done_out { assign Lenv_fair0done_out := ((((!(!((Lsys_fair4done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && !(!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && (!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && !((Lreg_stateG2_out) && (Ln41))))))) && !(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41)))))))) && !(!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready)))) && !(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41)))); },
+    UpdatedLenv_fair0done_out -> UpdatedLreg_controllable_nhgrant0_out { assign Lreg_controllable_nhgrant0_out := (Icontrollable_nhgrant0); },
+    UpdatedLreg_controllable_nhgrant0_out -> UpdatedLreg_i_hlock2_out { assign Lreg_i_hlock2_out := (Ii_hlock2); },
+    UpdatedLreg_i_hlock2_out -> UpdatedLreg_stateG10_2_out { assign Lreg_stateG10_2_out := (!(!((Lreg_stateG10_2_out) && (Ln41)) && (Icontrollable_hgrant2)) && !(Ii_hbusreq2)); },
+    UpdatedLreg_stateG10_2_out -> UpdatedLreg_stateA1_out { assign Lreg_stateA1_out := !(!(((Lreg_stateA1_out) && (Ln41)) && (Icontrollable_busreq)) && !((!(Ii_hburst0) && !(Ii_hburst1)) && (!((Lreg_stateA1_out) && (Ln41)) && (Icontrollable_hmastlock)))); },
+    UpdatedLreg_stateA1_out -> UpdatedLreg_controllable_hmastlock_out { assign Lreg_controllable_hmastlock_out := (Icontrollable_hmastlock); },
+    UpdatedLreg_controllable_hmastlock_out -> UpdatedLsys_fair4done_out { assign Lsys_fair4done_out := (!(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))) && !(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2)))); },
+    UpdatedLsys_fair4done_out -> UpdatedLreg_i_hbusreq2_out { assign Lreg_i_hbusreq2_out := (Ii_hbusreq2); },
+    UpdatedLreg_i_hbusreq2_out -> UpdatedLreg_i_hlock1_out { assign Lreg_i_hlock1_out := (Ii_hlock1); },
+    UpdatedLreg_i_hlock1_out -> UpdatedLfair_cnt0_out { assign Lfair_cnt0_out := ((!(!(!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready))) && !((Lfair_cnt0_out) && (Ln41))) && !((!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready))) && ((Lfair_cnt0_out) && (Ln41)))) && ((!(!((Lsys_fair4done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && !(!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && (!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && !((Lreg_stateG2_out) && (Ln41))))))) && !(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))))); },
+    UpdatedLfair_cnt0_out -> UpdatedLfair_cnt1_out { assign Lfair_cnt1_out := (!(!(((!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready))) && ((Lfair_cnt0_out) && (Ln41))) && !((Lfair_cnt1_out) && (Ln41))) && !(!((!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready))) && ((Lfair_cnt0_out) && (Ln41))) && ((Lfair_cnt1_out) && (Ln41)))) && ((!(!((Lsys_fair4done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && !(!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && (!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && !((Lreg_stateG2_out) && (Ln41))))))) && !(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))))); },
+    UpdatedLfair_cnt1_out -> UpdatedLfair_cnt2_out { assign Lfair_cnt2_out := ((!((((!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready))) && ((Lfair_cnt0_out) && (Ln41))) && ((Lfair_cnt1_out) && (Ln41))) && ((Lfair_cnt2_out) && (Ln41))) && !(!(((!(!((Lenv_fair0done_out) && (Ln41)) && ((Lreg_stateA1_out) && (Ln41))) && !(!((Lenv_fair1done_out) && (Ln41)) && !(Ii_hready))) && ((Lfair_cnt0_out) && (Ln41))) && ((Lfair_cnt1_out) && (Ln41))) && !((Lfair_cnt2_out) && (Ln41)))) && ((!(!((Lsys_fair4done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && !(!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && !(!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && (!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && !((Lreg_stateG2_out) && (Ln41))))))) && !(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))))); },
+    UpdatedLfair_cnt2_out -> UpdatedLenv_safe_err_happened_out { assign Lenv_safe_err_happened_out := !(!((Lenv_safe_err_happened_out) && (Ln41)) && (!((Ii_hlock2) && !(Ii_hbusreq2)) && (!((Ii_hlock1) && !(Ii_hbusreq1)) && !((Ii_hlock0) && !(Ii_hbusreq0))))); },
+    UpdatedLenv_safe_err_happened_out -> UpdatedLreg_i_hlock0_out { assign Lreg_i_hlock0_out := (Ii_hlock0); },
+    UpdatedLreg_i_hlock0_out -> UpdatedLreg_i_hready_out { assign Lreg_i_hready_out := (Ii_hready); },
+    UpdatedLreg_i_hready_out -> UpdatedLreg_controllable_hgrant1_out { assign Lreg_controllable_hgrant1_out := (Icontrollable_hgrant1); },
+    UpdatedLreg_controllable_hgrant1_out -> UpdatedLsys_fair2done_out { assign Lsys_fair2done_out := (!(!(!((Lsys_fair4done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && (Icontrollable_hmaster1)) && (Ii_hbusreq2))) && (!(!((Lsys_fair3done_out) && (Ln41)) && (!((Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq1))) && (!(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0))) && (!(!((Lsys_fair1done_out) && (Ln41)) && !(!((Lreg_stateG3_2_out) && (Ln41)) && (!((Lreg_stateG3_1_out) && (Ln41)) && !((Lreg_stateG3_0_out) && (Ln41))))) && !(!((Lsys_fair0done_out) && (Ln41)) && ((Lreg_stateG2_out) && (Ln41))))))) && !(!((Lsys_fair2done_out) && (Ln41)) && (!(!(Icontrollable_hmaster0) && !(Icontrollable_hmaster1)) && (Ii_hbusreq0)))); },
+    UpdatedLsys_fair2done_out -> UpdatedLreg_controllable_hmaster0_out { assign Lreg_controllable_hmaster0_out := (Icontrollable_hmaster0); },
+    UpdatedLreg_controllable_hmaster0_out -> w { guard running0 == 0; sync release0!; assign w0:=1; },
+    UpdatedLreg_controllable_hmaster0_out -> w { guard running1 == 0; sync release1!; assign w0:=1; };
+}
+
+process Process1() {
+bool Ia_0_;
+bool Ia_1_;
+bool Ib_0_;
+bool Ib_1_;
+bool Icontrollable_c_0_;
+bool Icontrollable_c_1_;
+bool Lstate_n15;
+bool Lerr_out;
+
+state
+    on0 { x1 <= 1000 },
+    on1 { x1 <= 800 },
+    w,
+    dead,
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+commit
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+init
+    w;
+trans
+    w -> on0 { guard Lstate_n15 == 0; sync go1?; assign x1:=0, w1:=0; },
+    w -> dead { guard Lstate_n15 == 0 && x1 > 2000; },
+    on0 -> up { guard Lstate_n15 == 0 && x1 >= 500 && x1 <= 1000; assign x1:=0; },
+    w -> on1 { guard Lstate_n15 == 1; sync go1?; assign x1:=0, w1:=0; },
+    w -> dead { guard Lstate_n15 == 1 && x1 > 2200; },
+    on1 -> up { guard Lstate_n15 == 1 && x1 >= 400 && x1 <= 800; assign x1:=0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 1; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 0; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 1; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 0; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 1; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 0; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 1; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 0; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 1; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 0; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 1; },
+    JustSetIcontrollable_c_1_ -> UpdatedLstate_n15 { assign Lstate_n15 := 1; },
+    UpdatedLstate_n15 -> UpdatedLerr_out { assign Lerr_out := !((!((!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && (Icontrollable_c_1_)) && !(!(!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && !(Icontrollable_c_1_))) && (!(!(!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && (Icontrollable_c_0_)) && !((!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && !(Icontrollable_c_0_)))); },
+    UpdatedLerr_out -> w { guard running0 == 1; sync release0!; assign w1:=1; },
+    UpdatedLerr_out -> w { guard running1 == 1; sync release1!; assign w1:=1; };
+}
+
+process Process2() {
+bool Istay;
+bool Icontrollable_reset;
+bool Ln7;
+bool Lcounter0_out;
+bool Lcounter1_out;
+bool Lcounter2_out;
+
+state
+    on0 { x2 <= 1000 },
+    on1 { x2 <= 800 },
+    w,
+    dead,
+    up,
+    JustSetIstay,
+    JustSetIcontrollable_reset,
+    UpdatedLn7,
+    UpdatedLcounter0_out,
+    UpdatedLcounter1_out,
+    UpdatedLcounter2_out;
+commit
+    up,
+    JustSetIstay,
+    JustSetIcontrollable_reset,
+    UpdatedLn7,
+    UpdatedLcounter0_out,
+    UpdatedLcounter1_out,
+    UpdatedLcounter2_out;
+init
+    w;
+trans
+    w -> on0 { guard Lcounter0_out == 0; sync go2?; assign x2:=0, w2:=0; },
+    w -> dead { guard Lcounter0_out == 0 && x2 > 2000; },
+    on0 -> up { guard Lcounter0_out == 0 && x2 >= 500 && x2 <= 1000; assign x2:=0; },
+    w -> on1 { guard Lcounter0_out == 1; sync go2?; assign x2:=0, w2:=0; },
+    w -> dead { guard Lcounter0_out == 1 && x2 > 2200; },
+    on1 -> up { guard Lcounter0_out == 1 && x2 >= 400 && x2 <= 800; assign x2:=0; },
+    up -> JustSetIstay { assign Istay := 0; },
+    up -> JustSetIstay { assign Istay := 1; },
+    JustSetIstay -> JustSetIcontrollable_reset { assign Icontrollable_reset := 0; },
+    JustSetIstay -> JustSetIcontrollable_reset { assign Icontrollable_reset := 1; },
+    JustSetIcontrollable_reset -> UpdatedLn7 { assign Ln7 := 1; },
+    UpdatedLn7 -> UpdatedLcounter0_out { assign Lcounter0_out := !(!(!((Lcounter0_out) && (Ln7)) && !(Istay)) && !(((Lcounter0_out) && (Ln7)) && (Istay))); },
+    UpdatedLcounter0_out -> UpdatedLcounter1_out { assign Lcounter1_out := !(!((((Lcounter0_out) && (Ln7)) && !(Istay)) && !((Lcounter1_out) && (Ln7))) && !(!(((Lcounter0_out) && (Ln7)) && !(Istay)) && ((Lcounter1_out) && (Ln7)))); },
+    UpdatedLcounter1_out -> UpdatedLcounter2_out { assign Lcounter2_out := (!(((((Lcounter1_out) && (Ln7)) && ((Lcounter0_out) && (Ln7))) && ((Lcounter2_out) && (Ln7))) && !(Istay)) && !(!(((((Lcounter1_out) && (Ln7)) && ((Lcounter0_out) && (Ln7))) && !(Icontrollable_reset)) && !(Istay)) && !((Lcounter2_out) && (Ln7)))); },
+    UpdatedLcounter2_out -> w { guard running0 == 2; sync release0!; assign w2:=1; },
+    UpdatedLcounter2_out -> w { guard running1 == 2; sync release1!; assign w2:=1; };
+}
+
+process Machine0() {
+
+state
+    busy,
+    idle;
+commit
+    idle;
+init
+    idle;
+trans
+    busy -> idle { sync release0?; assign running0 := 2; },
+    idle -> busy { guard round == 0 && w0 == 1; sync go0!; assign round = 1,  running0 := 0; },
+    idle -> idle { guard round == 0 && w0 == 0; assign round = 1; },
+    idle -> busy { guard round == 1 && w1 == 1; sync go1!; assign round = 2,  running0 := 1; },
+    idle -> idle { guard round == 1 && w1 == 0; assign round = 2; },
+    idle -> busy { guard round == 2 && w2 == 1; sync go2!; assign round = 0,  running0 := 2; },
+    idle -> idle { guard round == 2 && w2 == 0; assign round = 0; };
+}
+
+process Machine1() {
+
+state
+    busy,
+    idle;
+commit
+    idle;
+init
+    idle;
+trans
+    busy -> idle { sync release1?; assign running1 := 2; },
+    idle -> busy { guard round == 0 && w0 == 1; sync go0!; assign round = 1,  running1 := 0; },
+    idle -> idle { guard round == 0 && w0 == 0; assign round = 1; },
+    idle -> busy { guard round == 1 && w1 == 1; sync go1!; assign round = 2,  running1 := 1; },
+    idle -> idle { guard round == 1 && w1 == 0; assign round = 2; },
+    idle -> busy { guard round == 2 && w2 == 1; sync go2!; assign round = 0,  running1 := 2; },
+    idle -> idle { guard round == 2 && w2 == 0; assign round = 0; };
+}
+
+system Process0, Process1, Process2, Machine0, Machine1;
+prop{
+    E<> Process0_dead || Process1_dead ||Process2_dead 
+}

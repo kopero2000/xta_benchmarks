@@ -1,0 +1,286 @@
+ 
+chan go0,go1,go2; // Process i can start
+chan release0;
+chan release1; // Machine j can be freed
+int[0,2] running0 = 0; // Machine 1 is running process running1. 3 means none
+int[0,2] running1 = 0;
+
+int[0,2] round = 0;
+// Is process(i) waiting?
+// This is redundant information but don't know how to
+// simply access processes' locations
+bool w0 = 1;
+bool w1 = 1;
+bool w2 = 1;
+
+clock x0;
+// int[0,1] mode0;
+
+clock x1;
+// int[0,1] mode1;
+
+clock x2;
+// int[0,1] mode2;
+
+
+process Process0() {
+bool Ish0;
+bool Ish1;
+bool Ish2;
+bool Icontrollable_do_shift;
+bool Lstate_benchn11;
+bool Lstate_benchr0_out;
+bool Lstate_benchr1_out;
+bool Lstate_benchr2_out;
+bool Lstate_benchr3_out;
+bool Lstate_benchr4_out;
+bool Lstate_benchr5_out;
+bool Lstate_benchr6_out;
+bool Lstate_benchr7_out;
+
+state
+    on0 { x0 <= 1000 },
+    on1 { x0 <= 800 },
+    w,
+    dead,
+    up,
+    JustSetIsh0,
+    JustSetIsh1,
+    JustSetIsh2,
+    JustSetIcontrollable_do_shift,
+    UpdatedLstate_benchn11,
+    UpdatedLstate_benchr0_out,
+    UpdatedLstate_benchr1_out,
+    UpdatedLstate_benchr2_out,
+    UpdatedLstate_benchr3_out,
+    UpdatedLstate_benchr4_out,
+    UpdatedLstate_benchr5_out,
+    UpdatedLstate_benchr6_out,
+    UpdatedLstate_benchr7_out;
+commit
+    up,
+    JustSetIsh0,
+    JustSetIsh1,
+    JustSetIsh2,
+    JustSetIcontrollable_do_shift,
+    UpdatedLstate_benchn11,
+    UpdatedLstate_benchr0_out,
+    UpdatedLstate_benchr1_out,
+    UpdatedLstate_benchr2_out,
+    UpdatedLstate_benchr3_out,
+    UpdatedLstate_benchr4_out,
+    UpdatedLstate_benchr5_out,
+    UpdatedLstate_benchr6_out,
+    UpdatedLstate_benchr7_out;
+init
+    w;
+trans
+    w -> on0 { guard Lstate_benchn11 == 0; sync go0?; assign x0:=0, w0:=0; },
+    w -> dead { guard Lstate_benchn11 == 0 && x0 > 500; },
+    on0 -> up { guard Lstate_benchn11 == 0 && x0 >= 500 && x0 <= 1000; assign x0:=0; },
+    w -> on1 { guard Lstate_benchn11 == 1; sync go0?; assign x0:=0, w0:=0; },
+    w -> dead { guard Lstate_benchn11 == 1 && x0 > 800; },
+    on1 -> up { guard Lstate_benchn11 == 1 && x0 >= 400 && x0 <= 800; assign x0:=0; },
+    up -> JustSetIsh0 { assign Ish0 := 0; },
+    up -> JustSetIsh0 { assign Ish0 := 1; },
+    JustSetIsh0 -> JustSetIsh1 { assign Ish1 := 0; },
+    JustSetIsh0 -> JustSetIsh1 { assign Ish1 := 1; },
+    JustSetIsh1 -> JustSetIsh2 { assign Ish2 := 0; },
+    JustSetIsh1 -> JustSetIsh2 { assign Ish2 := 1; },
+    JustSetIsh2 -> JustSetIcontrollable_do_shift { assign Icontrollable_do_shift := 0; },
+    JustSetIsh2 -> JustSetIcontrollable_do_shift { assign Icontrollable_do_shift := 1; },
+    JustSetIcontrollable_do_shift -> UpdatedLstate_benchn11 { assign Lstate_benchn11 := 1; },
+    UpdatedLstate_benchn11 -> UpdatedLstate_benchr0_out { assign Lstate_benchr0_out := !(!(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr7_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr4_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr3_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr0_out -> UpdatedLstate_benchr1_out { assign Lstate_benchr1_out := !(!(((Lstate_benchr1_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr1_out) && (Lstate_benchn11)) && !(Ish0)) && !(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr5_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr4_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr1_out -> UpdatedLstate_benchr2_out { assign Lstate_benchr2_out := !(!(((Lstate_benchr2_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr2_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr1_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr6_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr5_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr2_out -> UpdatedLstate_benchr3_out { assign Lstate_benchr3_out := !(!(((Lstate_benchr3_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr3_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr2_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr7_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr6_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr3_out -> UpdatedLstate_benchr4_out { assign Lstate_benchr4_out := !(!(((Lstate_benchr4_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr4_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr3_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr7_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr4_out -> UpdatedLstate_benchr5_out { assign Lstate_benchr5_out := !(!(((Lstate_benchr5_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr5_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr4_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr1_out) && (Lstate_benchn11)) && !(Ish0)) && !(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr5_out -> UpdatedLstate_benchr6_out { assign Lstate_benchr6_out := !(!(((Lstate_benchr6_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr6_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr5_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr2_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr1_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr6_out -> UpdatedLstate_benchr7_out { assign Lstate_benchr7_out := !(!(((Lstate_benchr7_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr7_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr6_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr3_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr2_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr7_out -> w { guard running0 == 0; sync release0!; assign w0:=1; },
+    UpdatedLstate_benchr7_out -> w { guard running1 == 0; sync release1!; assign w0:=1; };
+}
+
+process Process1() {
+bool Ish0;
+bool Ish1;
+bool Ish2;
+bool Icontrollable_do_shift;
+bool Lstate_benchn11;
+bool Lstate_benchr0_out;
+bool Lstate_benchr1_out;
+bool Lstate_benchr2_out;
+bool Lstate_benchr3_out;
+bool Lstate_benchr4_out;
+bool Lstate_benchr5_out;
+bool Lstate_benchr6_out;
+bool Lstate_benchr7_out;
+
+state
+    on0 { x1 <= 1000 },
+    on1 { x1 <= 800 },
+    w,
+    dead,
+    up,
+    JustSetIsh0,
+    JustSetIsh1,
+    JustSetIsh2,
+    JustSetIcontrollable_do_shift,
+    UpdatedLstate_benchn11,
+    UpdatedLstate_benchr0_out,
+    UpdatedLstate_benchr1_out,
+    UpdatedLstate_benchr2_out,
+    UpdatedLstate_benchr3_out,
+    UpdatedLstate_benchr4_out,
+    UpdatedLstate_benchr5_out,
+    UpdatedLstate_benchr6_out,
+    UpdatedLstate_benchr7_out;
+commit
+    up,
+    JustSetIsh0,
+    JustSetIsh1,
+    JustSetIsh2,
+    JustSetIcontrollable_do_shift,
+    UpdatedLstate_benchn11,
+    UpdatedLstate_benchr0_out,
+    UpdatedLstate_benchr1_out,
+    UpdatedLstate_benchr2_out,
+    UpdatedLstate_benchr3_out,
+    UpdatedLstate_benchr4_out,
+    UpdatedLstate_benchr5_out,
+    UpdatedLstate_benchr6_out,
+    UpdatedLstate_benchr7_out;
+init
+    w;
+trans
+    w -> on0 { guard Lstate_benchn11 == 0; sync go1?; assign x1:=0, w1:=0; },
+    w -> dead { guard Lstate_benchn11 == 0 && x1 > 500; },
+    on0 -> up { guard Lstate_benchn11 == 0 && x1 >= 500 && x1 <= 1000; assign x1:=0; },
+    w -> on1 { guard Lstate_benchn11 == 1; sync go1?; assign x1:=0, w1:=0; },
+    w -> dead { guard Lstate_benchn11 == 1 && x1 > 800; },
+    on1 -> up { guard Lstate_benchn11 == 1 && x1 >= 400 && x1 <= 800; assign x1:=0; },
+    up -> JustSetIsh0 { assign Ish0 := 0; },
+    up -> JustSetIsh0 { assign Ish0 := 1; },
+    JustSetIsh0 -> JustSetIsh1 { assign Ish1 := 0; },
+    JustSetIsh0 -> JustSetIsh1 { assign Ish1 := 1; },
+    JustSetIsh1 -> JustSetIsh2 { assign Ish2 := 0; },
+    JustSetIsh1 -> JustSetIsh2 { assign Ish2 := 1; },
+    JustSetIsh2 -> JustSetIcontrollable_do_shift { assign Icontrollable_do_shift := 0; },
+    JustSetIsh2 -> JustSetIcontrollable_do_shift { assign Icontrollable_do_shift := 1; },
+    JustSetIcontrollable_do_shift -> UpdatedLstate_benchn11 { assign Lstate_benchn11 := 1; },
+    UpdatedLstate_benchn11 -> UpdatedLstate_benchr0_out { assign Lstate_benchr0_out := !(!(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr7_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr4_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr3_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr0_out -> UpdatedLstate_benchr1_out { assign Lstate_benchr1_out := !(!(((Lstate_benchr1_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr1_out) && (Lstate_benchn11)) && !(Ish0)) && !(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr5_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr4_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr1_out -> UpdatedLstate_benchr2_out { assign Lstate_benchr2_out := !(!(((Lstate_benchr2_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr2_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr1_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr6_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr5_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr2_out -> UpdatedLstate_benchr3_out { assign Lstate_benchr3_out := !(!(((Lstate_benchr3_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr3_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr2_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr7_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr6_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr3_out -> UpdatedLstate_benchr4_out { assign Lstate_benchr4_out := !(!(((Lstate_benchr4_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr4_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr3_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr7_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr4_out -> UpdatedLstate_benchr5_out { assign Lstate_benchr5_out := !(!(((Lstate_benchr5_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr5_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr4_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr1_out) && (Lstate_benchn11)) && !(Ish0)) && !(!(!(Lstate_benchr0_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr5_out -> UpdatedLstate_benchr6_out { assign Lstate_benchr6_out := !(!(((Lstate_benchr6_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr6_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr5_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr2_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr1_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr6_out -> UpdatedLstate_benchr7_out { assign Lstate_benchr7_out := !(!(((Lstate_benchr7_out) && (Lstate_benchn11)) && !(Icontrollable_do_shift)) && !(!(!(!(!(((Lstate_benchr7_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr6_out) && (Lstate_benchn11)) && (Ish0))) && !(Ish2)) && !(!(!(((Lstate_benchr3_out) && (Lstate_benchn11)) && !(Ish0)) && !(((Lstate_benchr2_out) && (Lstate_benchn11)) && (Ish0))) && (Ish2))) && (Icontrollable_do_shift))); },
+    UpdatedLstate_benchr7_out -> w { guard running0 == 1; sync release0!; assign w1:=1; },
+    UpdatedLstate_benchr7_out -> w { guard running1 == 1; sync release1!; assign w1:=1; };
+}
+
+process Process2() {
+bool Ia_0_;
+bool Ia_1_;
+bool Ib_0_;
+bool Ib_1_;
+bool Icontrollable_c_0_;
+bool Icontrollable_c_1_;
+bool Lstate_n15;
+bool Lerr_out;
+
+state
+    on0 { x2 <= 1000 },
+    on1 { x2 <= 800 },
+    w,
+    dead,
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+commit
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+init
+    w;
+trans
+    w -> on0 { guard Lstate_n15 == 0; sync go2?; assign x2:=0, w2:=0; },
+    w -> dead { guard Lstate_n15 == 0 && x2 > 500; },
+    on0 -> up { guard Lstate_n15 == 0 && x2 >= 500 && x2 <= 1000; assign x2:=0; },
+    w -> on1 { guard Lstate_n15 == 1; sync go2?; assign x2:=0, w2:=0; },
+    w -> dead { guard Lstate_n15 == 1 && x2 > 800; },
+    on1 -> up { guard Lstate_n15 == 1 && x2 >= 400 && x2 <= 800; assign x2:=0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 1; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 0; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 1; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 0; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 1; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 0; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 1; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 0; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 1; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 0; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 1; },
+    JustSetIcontrollable_c_1_ -> UpdatedLstate_n15 { assign Lstate_n15 := 1; },
+    UpdatedLstate_n15 -> UpdatedLerr_out { assign Lerr_out := !((!((!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && (Icontrollable_c_1_)) && !(!(!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && !(Icontrollable_c_1_))) && (!(!(!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && (Icontrollable_c_0_)) && !((!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && !(Icontrollable_c_0_)))); },
+    UpdatedLerr_out -> w { guard running0 == 2; sync release0!; assign w2:=1; },
+    UpdatedLerr_out -> w { guard running1 == 2; sync release1!; assign w2:=1; };
+}
+
+process Machine0() {
+
+state
+    busy,
+    idle;
+commit
+    idle;
+init
+    idle;
+trans
+    busy -> idle { sync release0?; assign running0 := 2; },
+    idle -> busy { guard round == 0 && w0 == 1; sync go0!; assign round = 1,  running0 := 0; },
+    idle -> idle { guard round == 0 && w0 == 0; assign round = 1; },
+    idle -> busy { guard round == 1 && w1 == 1; sync go1!; assign round = 2,  running0 := 1; },
+    idle -> idle { guard round == 1 && w1 == 0; assign round = 2; },
+    idle -> busy { guard round == 2 && w2 == 1; sync go2!; assign round = 0,  running0 := 2; },
+    idle -> idle { guard round == 2 && w2 == 0; assign round = 0; };
+}
+
+process Machine1() {
+
+state
+    busy,
+    idle;
+commit
+    idle;
+init
+    idle;
+trans
+    busy -> idle { sync release1?; assign running1 := 2; },
+    idle -> busy { guard round == 0 && w0 == 1; sync go0!; assign round = 1,  running1 := 0; },
+    idle -> idle { guard round == 0 && w0 == 0; assign round = 1; },
+    idle -> busy { guard round == 1 && w1 == 1; sync go1!; assign round = 2,  running1 := 1; },
+    idle -> idle { guard round == 1 && w1 == 0; assign round = 2; },
+    idle -> busy { guard round == 2 && w2 == 1; sync go2!; assign round = 0,  running1 := 2; },
+    idle -> idle { guard round == 2 && w2 == 0; assign round = 0; };
+}
+
+system Process0, Process1, Process2, Machine0, Machine1;
+prop{
+    E<> Process0_dead || Process1_dead ||Process2_dead 
+}

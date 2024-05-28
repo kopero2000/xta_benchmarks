@@ -1,0 +1,281 @@
+ 
+chan go0,go1,go2; // Process i can start
+chan release0;
+chan release1; // Machine j can be freed
+int[0,2] running0 = 0; // Machine 1 is running process running1. 3 means none
+int[0,2] running1 = 0;
+
+int[0,2] round = 0;
+// Is process(i) waiting?
+// This is redundant information but don't know how to
+// simply access processes' locations
+bool w0 = 1;
+bool w1 = 1;
+bool w2 = 1;
+
+clock x0;
+// int[0,1] mode0;
+
+clock x1;
+// int[0,1] mode1;
+
+clock x2;
+// int[0,1] mode2;
+
+
+process Process0() {
+bool Iin0;
+bool Iin1;
+bool Iin2;
+bool Iin3;
+bool Icontrollable_c0;
+bool Icontrollable_c1;
+bool Icontrollable_c2;
+bool Icontrollable_c3;
+bool Icontrollable_s;
+bool Lbenchn21;
+bool Lbenchbad_out;
+bool Lbenchstate0_out;
+bool Lbenchstate1_out;
+bool Lbenchstate2_out;
+bool Lbenchstate3_out;
+
+state
+    on0 { x0 <= 1000 },
+    on1 { x0 <= 2000 },
+    w,
+    dead,
+    up,
+    JustSetIin0,
+    JustSetIin1,
+    JustSetIin2,
+    JustSetIin3,
+    JustSetIcontrollable_c0,
+    JustSetIcontrollable_c1,
+    JustSetIcontrollable_c2,
+    JustSetIcontrollable_c3,
+    JustSetIcontrollable_s,
+    UpdatedLbenchn21,
+    UpdatedLbenchbad_out,
+    UpdatedLbenchstate0_out,
+    UpdatedLbenchstate1_out,
+    UpdatedLbenchstate2_out,
+    UpdatedLbenchstate3_out;
+commit
+    up,
+    JustSetIin0,
+    JustSetIin1,
+    JustSetIin2,
+    JustSetIin3,
+    JustSetIcontrollable_c0,
+    JustSetIcontrollable_c1,
+    JustSetIcontrollable_c2,
+    JustSetIcontrollable_c3,
+    JustSetIcontrollable_s,
+    UpdatedLbenchn21,
+    UpdatedLbenchbad_out,
+    UpdatedLbenchstate0_out,
+    UpdatedLbenchstate1_out,
+    UpdatedLbenchstate2_out,
+    UpdatedLbenchstate3_out;
+init
+    w;
+trans
+    w -> on0 { guard Lbenchstate0_out == 0; sync go0?; assign x0:=0, w0:=0; },
+    w -> dead { guard Lbenchstate0_out == 0 && x0 > 9000; },
+    on0 -> up { guard Lbenchstate0_out == 0 && x0 >= 1000 && x0 <= 1000; assign x0:=0; },
+    w -> on1 { guard Lbenchstate0_out == 1; sync go0?; assign x0:=0, w0:=0; },
+    w -> dead { guard Lbenchstate0_out == 1 && x0 > 18000; },
+    on1 -> up { guard Lbenchstate0_out == 1 && x0 >= 2000 && x0 <= 2000; assign x0:=0; },
+    up -> JustSetIin0 { assign Iin0 := 0; },
+    up -> JustSetIin0 { assign Iin0 := 1; },
+    JustSetIin0 -> JustSetIin1 { assign Iin1 := 0; },
+    JustSetIin0 -> JustSetIin1 { assign Iin1 := 1; },
+    JustSetIin1 -> JustSetIin2 { assign Iin2 := 0; },
+    JustSetIin1 -> JustSetIin2 { assign Iin2 := 1; },
+    JustSetIin2 -> JustSetIin3 { assign Iin3 := 0; },
+    JustSetIin2 -> JustSetIin3 { assign Iin3 := 1; },
+    JustSetIin3 -> JustSetIcontrollable_c0 { assign Icontrollable_c0 := 0; },
+    JustSetIin3 -> JustSetIcontrollable_c0 { assign Icontrollable_c0 := 1; },
+    JustSetIcontrollable_c0 -> JustSetIcontrollable_c1 { assign Icontrollable_c1 := 0; },
+    JustSetIcontrollable_c0 -> JustSetIcontrollable_c1 { assign Icontrollable_c1 := 1; },
+    JustSetIcontrollable_c1 -> JustSetIcontrollable_c2 { assign Icontrollable_c2 := 0; },
+    JustSetIcontrollable_c1 -> JustSetIcontrollable_c2 { assign Icontrollable_c2 := 1; },
+    JustSetIcontrollable_c2 -> JustSetIcontrollable_c3 { assign Icontrollable_c3 := 0; },
+    JustSetIcontrollable_c2 -> JustSetIcontrollable_c3 { assign Icontrollable_c3 := 1; },
+    JustSetIcontrollable_c3 -> JustSetIcontrollable_s { assign Icontrollable_s := 0; },
+    JustSetIcontrollable_c3 -> JustSetIcontrollable_s { assign Icontrollable_s := 1; },
+    JustSetIcontrollable_s -> UpdatedLbenchn21 { assign Lbenchn21 := 1; },
+    UpdatedLbenchn21 -> UpdatedLbenchbad_out { assign Lbenchbad_out := !(!((Lbenchbad_out) && (Lbenchn21)) && !(Icontrollable_s)); },
+    UpdatedLbenchbad_out -> UpdatedLbenchstate0_out { assign Lbenchstate0_out := (!(((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && !((Lbenchstate0_out) && (Lbenchn21))) && !(!((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && ((Lbenchstate0_out) && (Lbenchn21)))); },
+    UpdatedLbenchstate0_out -> UpdatedLbenchstate1_out { assign Lbenchstate1_out := (!(!(!((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && ((Lbenchstate0_out) && (Lbenchn21))) && !((Lbenchstate1_out) && (Lbenchn21))) && !((!((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && ((Lbenchstate0_out) && (Lbenchn21))) && ((Lbenchstate1_out) && (Lbenchn21)))); },
+    UpdatedLbenchstate1_out -> UpdatedLbenchstate2_out { assign Lbenchstate2_out := (!(!((!((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && ((Lbenchstate0_out) && (Lbenchn21))) && ((Lbenchstate1_out) && (Lbenchn21))) && !((Lbenchstate2_out) && (Lbenchn21))) && !(((!((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && ((Lbenchstate0_out) && (Lbenchn21))) && ((Lbenchstate1_out) && (Lbenchn21))) && ((Lbenchstate2_out) && (Lbenchn21)))); },
+    UpdatedLbenchstate2_out -> UpdatedLbenchstate3_out { assign Lbenchstate3_out := !(!(!(((!((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && ((Lbenchstate0_out) && (Lbenchn21))) && ((Lbenchstate1_out) && (Lbenchn21))) && ((Lbenchstate2_out) && (Lbenchn21))) && ((Lbenchstate3_out) && (Lbenchn21))) && !((((!((!(!((!(!(!(Icontrollable_c1) && !(Icontrollable_c0)) && (Icontrollable_c3)) && !(Iin1)) && !(Iin2)) && !(!(!((!(Iin2) && !(Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))) && !((!(!(!(Iin1) && !(Icontrollable_c0)) && !((Iin1) && (Icontrollable_c0))) && (Icontrollable_c1)) && (Iin2))) && (Icontrollable_c3))) && !(Iin0)) && (!((!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && (Iin3)) && !(!(!(!((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && (!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2))) && !(((!((!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && (((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0)))) && !(!(!(((Iin1) && (Icontrollable_c1)) && ((Iin2) && (Icontrollable_c0))) && !(!((Iin1) && (Icontrollable_c1)) && !((Iin2) && (Icontrollable_c0)))) && !(((Iin0) && (Icontrollable_c1)) && ((Iin1) && (Icontrollable_c0))))) && !(Icontrollable_c3)) && !(!(!(Iin0) && !(Icontrollable_c3)) && (Icontrollable_c2)))) && !(Iin3)))) && ((Lbenchstate0_out) && (Lbenchn21))) && ((Lbenchstate1_out) && (Lbenchn21))) && ((Lbenchstate2_out) && (Lbenchn21))) && !((Lbenchstate3_out) && (Lbenchn21)))); },
+    UpdatedLbenchstate3_out -> w { guard running0 == 0; sync release0!; assign w0:=1; },
+    UpdatedLbenchstate3_out -> w { guard running1 == 0; sync release1!; assign w0:=1; };
+}
+
+process Process1() {
+bool Ia_0_;
+bool Ia_1_;
+bool Ib_0_;
+bool Ib_1_;
+bool Icontrollable_c_0_;
+bool Icontrollable_c_1_;
+bool Lstate_n15;
+bool Lerr_out;
+
+state
+    on0 { x1 <= 1000 },
+    on1 { x1 <= 2000 },
+    w,
+    dead,
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+commit
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+init
+    w;
+trans
+    w -> on0 { guard Lstate_n15 == 0; sync go1?; assign x1:=0, w1:=0; },
+    w -> dead { guard Lstate_n15 == 0 && x1 > 9000; },
+    on0 -> up { guard Lstate_n15 == 0 && x1 >= 1000 && x1 <= 1000; assign x1:=0; },
+    w -> on1 { guard Lstate_n15 == 1; sync go1?; assign x1:=0, w1:=0; },
+    w -> dead { guard Lstate_n15 == 1 && x1 > 18000; },
+    on1 -> up { guard Lstate_n15 == 1 && x1 >= 2000 && x1 <= 2000; assign x1:=0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 1; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 0; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 1; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 0; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 1; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 0; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 1; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 0; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 1; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 0; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 1; },
+    JustSetIcontrollable_c_1_ -> UpdatedLstate_n15 { assign Lstate_n15 := 1; },
+    UpdatedLstate_n15 -> UpdatedLerr_out { assign Lerr_out := !((!((!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && (Icontrollable_c_1_)) && !(!(!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && !(Icontrollable_c_1_))) && (!(!(!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && (Icontrollable_c_0_)) && !((!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && !(Icontrollable_c_0_)))); },
+    UpdatedLerr_out -> w { guard running0 == 1; sync release0!; assign w1:=1; },
+    UpdatedLerr_out -> w { guard running1 == 1; sync release1!; assign w1:=1; };
+}
+
+process Process2() {
+bool Ia_0_;
+bool Ia_1_;
+bool Ib_0_;
+bool Ib_1_;
+bool Icontrollable_c_0_;
+bool Icontrollable_c_1_;
+bool Lstate_n15;
+bool Lerr_out;
+
+state
+    on0 { x2 <= 1000 },
+    on1 { x2 <= 2000 },
+    w,
+    dead,
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+commit
+    up,
+    JustSetIa_0_,
+    JustSetIa_1_,
+    JustSetIb_0_,
+    JustSetIb_1_,
+    JustSetIcontrollable_c_0_,
+    JustSetIcontrollable_c_1_,
+    UpdatedLstate_n15,
+    UpdatedLerr_out;
+init
+    w;
+trans
+    w -> on0 { guard Lstate_n15 == 0; sync go2?; assign x2:=0, w2:=0; },
+    w -> dead { guard Lstate_n15 == 0 && x2 > 9000; },
+    on0 -> up { guard Lstate_n15 == 0 && x2 >= 1000 && x2 <= 1000; assign x2:=0; },
+    w -> on1 { guard Lstate_n15 == 1; sync go2?; assign x2:=0, w2:=0; },
+    w -> dead { guard Lstate_n15 == 1 && x2 > 18000; },
+    on1 -> up { guard Lstate_n15 == 1 && x2 >= 2000 && x2 <= 2000; assign x2:=0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 0; },
+    up -> JustSetIa_0_ { assign Ia_0_ := 1; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 0; },
+    JustSetIa_0_ -> JustSetIa_1_ { assign Ia_1_ := 1; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 0; },
+    JustSetIa_1_ -> JustSetIb_0_ { assign Ib_0_ := 1; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 0; },
+    JustSetIb_0_ -> JustSetIb_1_ { assign Ib_1_ := 1; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 0; },
+    JustSetIb_1_ -> JustSetIcontrollable_c_0_ { assign Icontrollable_c_0_ := 1; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 0; },
+    JustSetIcontrollable_c_0_ -> JustSetIcontrollable_c_1_ { assign Icontrollable_c_1_ := 1; },
+    JustSetIcontrollable_c_1_ -> UpdatedLstate_n15 { assign Lstate_n15 := 1; },
+    UpdatedLstate_n15 -> UpdatedLerr_out { assign Lerr_out := !((!((!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && (Icontrollable_c_1_)) && !(!(!(!(!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && !((Ib_0_) && (Ia_0_))) && !((!(!(Ib_1_) && (Ia_1_)) && !((Ib_1_) && !(Ia_1_))) && ((Ib_0_) && (Ia_0_)))) && !(Icontrollable_c_1_))) && (!(!(!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && (Icontrollable_c_0_)) && !((!(!(Ib_0_) && !(Ia_0_)) && !((Ib_0_) && (Ia_0_))) && !(Icontrollable_c_0_)))); },
+    UpdatedLerr_out -> w { guard running0 == 2; sync release0!; assign w2:=1; },
+    UpdatedLerr_out -> w { guard running1 == 2; sync release1!; assign w2:=1; };
+}
+
+process Machine0() {
+
+state
+    busy,
+    idle;
+commit
+    idle;
+init
+    idle;
+trans
+    busy -> idle { sync release0?; assign running0 := 2; },
+    idle -> busy { guard round == 0 && w0 == 1; sync go0!; assign round = 1,  running0 := 0; },
+    idle -> idle { guard round == 0 && w0 == 0; assign round = 1; },
+    idle -> busy { guard round == 1 && w1 == 1; sync go1!; assign round = 2,  running0 := 1; },
+    idle -> idle { guard round == 1 && w1 == 0; assign round = 2; },
+    idle -> busy { guard round == 2 && w2 == 1; sync go2!; assign round = 0,  running0 := 2; },
+    idle -> idle { guard round == 2 && w2 == 0; assign round = 0; };
+}
+
+process Machine1() {
+
+state
+    busy,
+    idle;
+commit
+    idle;
+init
+    idle;
+trans
+    busy -> idle { sync release1?; assign running1 := 2; },
+    idle -> busy { guard round == 0 && w0 == 1; sync go0!; assign round = 1,  running1 := 0; },
+    idle -> idle { guard round == 0 && w0 == 0; assign round = 1; },
+    idle -> busy { guard round == 1 && w1 == 1; sync go1!; assign round = 2,  running1 := 1; },
+    idle -> idle { guard round == 1 && w1 == 0; assign round = 2; },
+    idle -> busy { guard round == 2 && w2 == 1; sync go2!; assign round = 0,  running1 := 2; },
+    idle -> idle { guard round == 2 && w2 == 0; assign round = 0; };
+}
+
+system Process0, Process1, Process2, Machine0, Machine1;
+prop{
+    E<> Process0_dead || Process1_dead ||Process2_dead 
+}
